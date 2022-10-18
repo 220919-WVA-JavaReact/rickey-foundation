@@ -14,13 +14,15 @@ import java.time.LocalDateTime;
 @WebServlet("/tickets")
 public class ticketServlet extends HttpServlet{
 
+    Employee employee = new Employee();
+
     ticketService ts = new ticketService();
 
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("LOG - ticketServlet received a GET request at " + LocalDateTime.now());
-        ts.getAllTickets(Employee employee);
+        ts.getAllTickets(employee);
     }
 
     @Override
@@ -30,6 +32,7 @@ public class ticketServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ts.create(Employee employee);
+        ts.create(employee);
     }
+
 }

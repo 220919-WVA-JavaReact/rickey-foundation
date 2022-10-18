@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.revature.model.Employee;
 import com.revature.service.employeeService;
 import com.sun.net.httpserver.HttpServer;
 
@@ -15,15 +16,29 @@ import java.net.InetSocketAddress;
 @WebServlet("/login")
 public class employeeServlet extends HttpServlet{
 
+    Employee employee = new Employee();
+
     employeeService es = new employeeService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         es.getAllEmployees();
+        es.login();
+        if(employee.getUsername() != null){
+            resp.setStatus(200);
+
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         es.register();
+        employee.setEmail(employee.getEmail());
+        employee.setFname(employee.getFname());
+        employee.setLname(employee.getLname());
+        employee.setUsername(employee.getUsername());
+        employee.setPassword(employee.getPassword());
+
+        resp.setStatus(201);
     }
 
     @Override
