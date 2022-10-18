@@ -1,0 +1,14 @@
+.colors{
+    border: 2px solid black;
+    width: 200px;
+    margin: 1rem;
+}
+
+#course-container{
+    display: flex;
+}
+
+.colors:hover{
+    background-color: navy;
+    text-emphasis-color: white;
+}
