@@ -13,8 +13,14 @@ public class TicketServiceAPI{
 
     public Ticket create(int amount, String reason, Employee employee) {
         Ticket ticket = new Ticket();
+        // Ticket ticket = td.getByTicketId(amount);
         ticket.setAmount(amount);
         ticket.setReason(reason);
+//        if(reason.equals(null)){
+//            System.out.println("Ticket must have a reason/description");
+//
+//        }
+
         return td.createTicket(ticket, employee);
     }
 }

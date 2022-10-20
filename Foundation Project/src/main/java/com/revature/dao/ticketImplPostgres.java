@@ -50,6 +50,40 @@ public class ticketImplPostgres implements ticketDAO{
         return tickets;
     }
 
+    public List<Ticket> getTicketByStatus(Employee employee) {
+
+        List<Ticket> tickets = new ArrayList<>();
+
+        try (Connection conn = connectionUtil.getConnection()){
+            String sql = "SELECT * FROM ticket WHERE employee_id = ? AND status = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, employee.getId());
+            stmt.setString(2, "Pending");
+
+            ResultSet rs;
+
+            if ((rs = stmt.executeQuery()) != null){
+                // if 'if' statement runs the query exist
+                while (rs.next()){
+                    int id = rs.getInt("id");
+                    int amount = rs.getInt("amount");
+                    String reason = rs.getString("reason");
+                    int empid = rs.getInt("employee_id");
+                    String status = rs.getString("status");
+
+                    Ticket ticket = new Ticket(id, amount, reason, empid, status);
+                    tickets.add(ticket);
+
+                }
+            }
+
+        } catch(SQLException e){
+            System.out.println("Username taken. Please try again.");
+        }
+
+        return tickets;
+    }
+
 
     @Override
     public List<Ticket> getTicketByEmployeeId(Employee employee) {

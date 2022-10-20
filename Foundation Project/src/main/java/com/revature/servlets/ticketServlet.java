@@ -1,6 +1,7 @@
 package com.revature.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.dao.ticketImplPostgres;
 import com.revature.model.Employee;
 import com.revature.model.Ticket;
 import com.revature.service.EmployeeServiceAPI;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 
 @WebServlet("/tickets")
 public class ticketServlet extends HttpServlet{
@@ -28,15 +31,44 @@ public class ticketServlet extends HttpServlet{
     ObjectMapper mapper = new ObjectMapper();
 
 
-    EmployeeServiceAPI es = new EmployeeServiceAPI();
+    ticketImplPostgres tip = new ticketImplPostgres();
 
     TicketServiceAPI tsa = new TicketServiceAPI();
+
+    ticketService ts = new ticketService();
 
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("LOG - ticketServlet received a GET request at " + LocalDateTime.now());
-//        ts.getAllTickets(employee);
+        HttpSession session = req.getSession(false);
+        if(session != null){
+            Employee loggedInEmployee = (Employee) session.getAttribute("auth-user");
+            if(req.getParameter("action").equals("view-my-tickets")){
+                List<Ticket> tickets = tip.getTicketByEmployeeId(loggedInEmployee);
+                if(req.getParameter("status").equals("pending")){
+                    List<Ticket> pendingTickets = tip.getTicketByStatus(loggedInEmployee);
+                    if(pendingTickets.size() < 1){
+                        resp.getWriter().write("You currently have zero pending tickets");
+                    } else{
+                        String payload = mapper.writeValueAsString(pendingTickets);
+                        resp.getWriter().write(payload);
+                        resp.setStatus(200);
+                        resp.setContentType("application/json");
+                    }
+                }
+                if (tickets.size() < 1){
+                    resp.getWriter().write("You currently have zero tickets");
+                } else{
+                    String payload = mapper.writeValueAsString(tickets);
+                    resp.getWriter().write(payload);
+                    resp.setStatus(200);
+                    resp.setContentType("application/json");
+                }
+            }
+            Employee loggedemployee = mapper.readValue(req.getInputStream(), Employee.class);
+        }
+
     }
 
     @Override
@@ -50,17 +82,24 @@ public class ticketServlet extends HttpServlet{
         HttpSession session = req.getSession(false);
         if(session != null) {
             Employee loggedInEmployee = (Employee) session.getAttribute("auth-user");
+            Ticket ticket = mapper.readValue(req.getInputStream(), Ticket.class);
 
             if (req.getParameter("action").equals("submit-ticket")) {
-                Ticket ticket = mapper.readValue(req.getInputStream(), Ticket.class);
-                Ticket tick = tsa.create(ticket.getAmount(), ticket.getReason(), loggedInEmployee);
-                String payload = mapper.writeValueAsString(tick);
-                if(!payload.equals("null")){
+                if(String.valueOf(ticket.getAmount()).equals("") || ticket.getAmount() <= 0 ){
+                    resp.getWriter().write("Amount of ticket cannot be empty");
+                    resp.setStatus(400);
+                } else if (ticket.getReason().equals("")) {
+                    HashMap<String, Object> errorMessage = new HashMap<>();
+                    errorMessage.put("Status code", 400);
+                    errorMessage.put("Message", "Ticket cannot have a null value for reason");
+                    errorMessage.put("Timestamp", LocalDateTime.now().toString());
+                    resp.getWriter().write(mapper.writeValueAsString(errorMessage));
+                } else{
+                    Ticket tick = tsa.create(ticket.getAmount(), ticket.getReason(), loggedInEmployee);
+                    String payload = mapper.writeValueAsString(tick);
+                    resp.setContentType("application/json");
                     resp.getWriter().write(payload);
                     resp.setStatus(201);
-                } else{
-                    resp.getWriter().write("Ticket wasn't created");
-                    resp.setStatus(200);
                 }
 
 

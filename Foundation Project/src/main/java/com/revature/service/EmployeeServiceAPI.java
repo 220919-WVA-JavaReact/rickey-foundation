@@ -3,6 +3,7 @@ package com.revature.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dao.EmployeeDAOImplPostgres;
+import com.revature.dao.ticketImplPostgres;
 import com.revature.model.Employee;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +22,8 @@ import java.util.HashMap;
 
 public class EmployeeServiceAPI {
     EmployeeDAOImplPostgres ed = new EmployeeDAOImplPostgres();
+
+    ticketImplPostgres tip = new ticketImplPostgres();
 
 
 
@@ -45,4 +48,9 @@ public class EmployeeServiceAPI {
         }
 
     }
+//
+//    public Employee getTickets(String username){
+//        Employee employee = tip.getAllTickets();
+//
+//    }
 }
