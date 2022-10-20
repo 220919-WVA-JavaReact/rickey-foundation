@@ -3,11 +3,17 @@ package com.revature.service;
 import com.revature.dao.EmployeeDAOImplPostgres;
 import com.revature.model.Employee;
 import com.revature.service.employeeService;
+import com.revature.util.connectionUtil;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class EmployeeServiceAPI {
     EmployeeDAOImplPostgres ed = new EmployeeDAOImplPostgres();
 
-    employeeService es = new employeeService();
+//    employeeService es = new employeeService();
 
     public String login(String uname, String pword){
         Employee employee = new Employee();
@@ -20,14 +26,8 @@ public class EmployeeServiceAPI {
         return uname;
     }
 
-    public String register(String fname, String lname, String uname, String pword, String email){
-        Employee employee = new Employee();
-        employee = ed.createEmployee(fname, lname, uname, pword, email);
-        if(employee.getEmployeeid() != 0){
-            System.out.println("You have been registered!");
-        }
-        return uname;
 
+    public Employee register(String fname, String lname, String username, String password, String email) {
+        return ed.createEmployee(fname, lname, username, password, email);
     }
-
 }

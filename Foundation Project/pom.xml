@@ -6,19 +6,11 @@
 
     <packaging>war</packaging>
 
-
     <groupId>org.example</groupId>
-    <artifactId>newTicketApp</artifactId>
+    <artifactId>ManagerServlet</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.5.0</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -33,11 +25,21 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.13.3</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.0</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -55,17 +57,12 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <url>http://localhost:8080/</url>
+                    <url>http://localhost:8080/manager/text</url>
                     <server>LocalTomcat</server>
-                    <path>tickets</path>
-                    <username>admin</username>
-                    <password>revature</password>
-                    <update>true</update>
+                    <path>/foundation</path>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
-
 </project>
-

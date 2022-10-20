@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dao.EmployeeDAOImplPostgres;
 import com.revature.dao.employeeDAO;
 import com.revature.model.Employee;
@@ -12,6 +13,8 @@ public class employeeService {
     employeeDAO ed = new EmployeeDAOImplPostgres();
 
     Scanner sc = new Scanner(System.in);
+
+    ObjectMapper mapper = new ObjectMapper();
 
     public Employee login(){
         System.out.println("Are you a manager?" + "\n" + "[1] Yes" + "\n" + "[2] No");
@@ -78,6 +81,13 @@ public class employeeService {
 
         return employee;
     }
+
+//    public Employee register(ObjectMapper mapper){
+//        Employee employee = ed.createEmployee(fname, lname, username, password, email);
+//
+//        System.out.println("You have been added to the database!");
+//
+//    }
 
     // this is to view all employees
 

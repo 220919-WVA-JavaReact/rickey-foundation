@@ -1,14 +1,15 @@
 package com.revature.util;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.Properties;
 
 public class connectionUtil {
-    // going to make a singleton instance connection
-    // limit the number of connections we can make
-    // to make this a singleton we need; private static instance, private constructor; public static getInstance() method
     private static Connection conn = null;
 
     private connectionUtil() {
@@ -17,11 +18,8 @@ public class connectionUtil {
     }
 
     public static Connection getConnection() {
-//         check if we have a connection; if exist return connection
-//         if no connection create new connection
         try {
             if (conn != null && !conn.isClosed()) {
-                // checks that the connection exist and is not closed
                 System.out.println("using previously made connection");
                 return conn;
             }
@@ -30,35 +28,39 @@ public class connectionUtil {
             return null;
         }
 
-//
-//        // Not secure delete later
-        String url = "jdbc:postgresql://database-1.cd4xb7fxatmk.us-east-1.rds.amazonaws.com:5432/postgres";
-        String username = "postgres";
-        String password = "postgres";
-//
-//        // use these credentials to create a connection
-//
-//        try {
-//            conn = DriverManager.getConnection(url, username, password);
-//            System.out.println("new connection");
-//        } catch (SQLException e) {
-//            System.out.println(url);
-//            System.out.println("no connection");
-//            e.printStackTrace();
-//
-//        }
-//        String url = System.getenv("url");
-//        String username = System.getenv("username");
-//        String password = System.getenv("password");
+        String url = "";
+        String username = "";
+        String password = "";
+
+        Properties prop = new Properties();
 
         try {
+            prop.load(new FileReader("/Users/rickeyrichardson/220919-WVA-JavaReact/rickey-richardson-foundation-project/Foundation Project/src/main/resources/application.properties"));
+
+            url = prop.getProperty("url");
+            username = prop.getProperty("username");
+            password = prop.getProperty("password");
+
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("Connection has been made");
+            System.out.println("Established connection to database! ");
+        } catch (IOException e) {
+            System.out.println("Property file not found");
+            throw new RuntimeException(e);
         } catch (SQLException e) {
-            System.out.println("connection can't be made");
-            e.printStackTrace();
+            System.out.println("Could not establish connection");
+            throw new RuntimeException(e);
         }
+
         return conn;
+    }
+
+    static{
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Failed to load Postgres Driver");
+            throw new RuntimeException(e);
+        }
     }
 
 

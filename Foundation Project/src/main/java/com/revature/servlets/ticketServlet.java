@@ -3,6 +3,7 @@ package com.revature.servlets;
 import com.revature.model.Employee;
 import com.revature.service.ticketService;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,11 @@ import java.time.LocalDateTime;
 
 @WebServlet("/tickets")
 public class ticketServlet extends HttpServlet{
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+    }
 
     Employee employee = new Employee();
 
@@ -32,7 +38,11 @@ public class ticketServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ts.create(employee);
+
+        System.out.println("[LOG] - ticketServlet recieved a request at " + LocalDateTime.now());
+
+
+        //ts.create(employee);
     }
 
 }

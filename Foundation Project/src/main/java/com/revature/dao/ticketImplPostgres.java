@@ -19,18 +19,12 @@ public class ticketImplPostgres implements ticketDAO{
     @Override
     public List<Ticket> getAllTickets() {
 
-        // SQL statement to get all employees back from our employees table; SELECT * FROM employee
-        // first connect with connection object
-
         Connection conn = connectionUtil.getConnection();
-        // SQL statement
 
-        // to store all employees create an empty list and store the info inside it
         List<Ticket> tickets = new ArrayList<>();
 
         try {
             Statement stmt = conn.createStatement();
-            // all logic goes inside of the try block
 
             String sql = "SELECT * FROM ticket";
 
@@ -44,12 +38,7 @@ public class ticketImplPostgres implements ticketDAO{
                 String status = rs.getString("status");
                 int employid = rs.getInt("employee_id");
 
-                // Create an employee object to store the info every loop
                 Ticket tick = new Ticket(id, amount, status, employid);
-
-                // System.out.println(employ);
-
-                // Add resulting item to list of teachers
 
                 tickets.add(tick);
 
@@ -91,7 +80,6 @@ public class ticketImplPostgres implements ticketDAO{
 
         } catch(SQLException e){
             System.out.println("Username taken. Please try again.");
-            return null;
         }
 
         return tickets;

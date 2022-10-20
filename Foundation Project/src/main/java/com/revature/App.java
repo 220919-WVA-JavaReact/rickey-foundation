@@ -49,16 +49,12 @@ public class App {
 
             switch (subchoice) {
                 case "1":
-                    // create tickets
                     ts.create(LoggedEmploy);
                     break;
                 case "2":
-                    // get all tickets
                     ts.getAllTickets(LoggedEmploy);
                     break;
                 case "3":
-                    // logout
-                    //es.getAllEmployees();
                     break;
                 default:
                     System.out.println("Invalid input");
