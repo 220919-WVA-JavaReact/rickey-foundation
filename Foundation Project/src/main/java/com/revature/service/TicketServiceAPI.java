@@ -1,29 +1,20 @@
 package com.revature.service;
 
+import com.revature.dao.ticketDAO;
 import com.revature.dao.ticketImplPostgres;
 import com.revature.model.Employee;
+import com.revature.model.Ticket;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-public class TicketServiceAPI extends HttpServlet{
+public class TicketServiceAPI{
+    
+    ticketDAO td = new ticketImplPostgres();
 
-    ticketImplPostgres td = new ticketImplPostgres();
 
-    Employee employee = new Employee();
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        td.getByTicketId(employee.getId());
-        if (employee.getEmployeeid() != 0){
-            System.out.println("Here are your current tickets");
-
-        } else{
-            System.out.println("No tickets to view at this time");
-        }
+    public Ticket create(int amount, String reason, Employee employee) {
+        Ticket ticket = new Ticket();
+        ticket.setAmount(amount);
+        ticket.setReason(reason);
+        return td.createTicket(ticket, employee);
     }
-
 }

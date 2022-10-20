@@ -87,12 +87,32 @@ public class Ticket {
         this.amount = amount;
     }
 
-    public String getStatus() {
+    public String getReason() {
         return reason;
     }
 
-    public void setStatus(String status) {
+    public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public int getEmployee_id() {
+        return employee_id;
+    }
+
+    public void setEmployee_id(int employee_id) {
+        this.employee_id = employee_id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Employee getEmployee() {
+        return employee;
     }
 
     public Employee getEmployee(Employee loggedEmploy) {

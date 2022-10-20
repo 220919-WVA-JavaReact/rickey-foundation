@@ -27,14 +27,14 @@ public class ticketService {
         ticket = new Ticket(amount, reason, employee.getEmployeeid());
 
 
-        boolean successful = td.createTicket(ticket, employee);
+        //boolean successful = td.createTicket(ticket, employee);
 
 
-        if(successful){
-            System.out.println("Your ticket has been submitted!");
-        } else {
-            System.out.println("Invalid ticket submission");
-        }
+//        if(successful){
+//            System.out.println("Your ticket has been submitted!");
+//        } else {
+//            System.out.println("Invalid ticket submission");
+//        }
     }
 
 

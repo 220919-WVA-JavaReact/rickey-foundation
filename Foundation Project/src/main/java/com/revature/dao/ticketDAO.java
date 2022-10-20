@@ -14,5 +14,5 @@ public interface ticketDAO {
 
 
 
-    boolean createTicket(Ticket ticket, Employee employee);
+    Ticket createTicket(Ticket ticket, Employee employee);
 }

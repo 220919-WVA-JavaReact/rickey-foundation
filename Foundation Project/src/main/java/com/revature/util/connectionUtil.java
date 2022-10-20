@@ -35,7 +35,7 @@ public class connectionUtil {
         Properties prop = new Properties();
 
         try {
-            prop.load(new FileReader("/Users/rickeyrichardson/220919-WVA-JavaReact/rickey-richardson-foundation-project/Foundation Project/src/main/resources/application.properties"));
+            prop.load(new FileReader("/Users/rickeyrichardson/rickey-foundation/Foundation Project/src/main/resources/application.properties"));
 
             url = prop.getProperty("url");
             username = prop.getProperty("username");

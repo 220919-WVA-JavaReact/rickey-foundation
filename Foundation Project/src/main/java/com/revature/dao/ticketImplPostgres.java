@@ -85,28 +85,35 @@ public class ticketImplPostgres implements ticketDAO{
         return tickets;
     }
 
-    @Override
-    public boolean createTicket(Ticket ticket, Employee employee) {
+    // @Override
+    public Ticket createTicket(Ticket ticket, Employee employee) {
+        Ticket newTicket = new Ticket();
         try(Connection conn = connectionUtil.getConnection()) {
-            String sql = "INSERT INTO ticket (amount, reason, employee_id, status) VALUES (?,?,?,?)";
+            String sql = "INSERT INTO ticket (amount, reason, employee_id, status) VALUES (?,?,?,?) RETURNING *";
 
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             stmt.setInt(1, ticket.getAmount());
-            stmt.setString(2, ticket.getStatus());
+            stmt.setString(2, ticket.getReason());
             stmt.setInt(3, employee.getId());
             stmt.setString(4, "Pending");
+            ResultSet rs;
+            if((rs = stmt.executeQuery()) != null){
+                rs.next();
+                int id = rs.getInt("id");
+                int amount = rs.getInt("amount");
+                String reason = rs.getString("reason");
+                int employId = rs.getInt("employee_id");
+                String status = rs.getString("status");
+
+                newTicket = new Ticket(id, amount, reason, employId, status);
 
 
-            int rowsUpdated = stmt.executeUpdate();
-
-            if (rowsUpdated == 1) {
-                return true;
             }
 
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return false;
+        return newTicket;
     }
 }
