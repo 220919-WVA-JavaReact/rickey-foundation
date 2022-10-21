@@ -121,6 +121,7 @@ public class ticketServlet extends HttpServlet{
                 }
             } else {
                 resp.getWriter().write("You must be logged in as a manager");
+                resp.setStatus(401);
             }
         }
     }
@@ -144,6 +145,7 @@ public class ticketServlet extends HttpServlet{
                     errorMessage.put("Timestamp", LocalDateTime.now().toString());
                     resp.getWriter().write(mapper.writeValueAsString(errorMessage));
                     resp.setContentType("application/json");
+                    resp.setStatus(400);
                 } else{
                     Ticket tick = tsa.create(ticket.getAmount(), ticket.getReason(), loggedInEmployee);
                     String payload = mapper.writeValueAsString(tick);

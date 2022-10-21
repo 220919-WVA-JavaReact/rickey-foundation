@@ -76,7 +76,7 @@ public class AuthServlet extends HttpServlet {
         if (session != null) {
             session.invalidate();
             resp.getWriter().write("You have been logged out.");
-            resp.setStatus(400);
+            resp.setStatus(200);
         }
     }
 }
