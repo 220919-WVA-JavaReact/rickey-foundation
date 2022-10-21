@@ -77,7 +77,8 @@ public class ticketServlet extends HttpServlet{
                             resp.setContentType("application/json");
                         }
                     }
-                } else {
+                }
+            }else {
                     if (req.getParameter("action").equals("view-all-tickets")) {
                         List<Ticket> newTickets = tsa.getTicketsByStatus("Pending");
                         if (newTickets.size() > 0) {
@@ -90,11 +91,13 @@ public class ticketServlet extends HttpServlet{
 
 
                     }
-                }
+
+            }
+
             }
 
         }
-    }
+
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
