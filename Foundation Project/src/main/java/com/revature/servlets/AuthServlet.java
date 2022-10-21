@@ -73,13 +73,13 @@ public class AuthServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("[LOG] - AuthServlet initiated");
         HttpSession session = req.getSession(false);
         if (session != null) {
             session.invalidate();
             resp.getWriter().write("You have been logged out.");
+            resp.setStatus(400);
         }
-
-        resp.setStatus(204);
     }
 }
 
