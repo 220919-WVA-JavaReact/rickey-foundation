@@ -45,9 +45,8 @@ public class AuthServlet extends HttpServlet {
                 resp.getWriter().write(payload);
                 session = req.getSession();
                 session.setAttribute("auth-user", loggedemploy);
-                System.out.println("You have logged in");
+                resp.setContentType("application/json");
                 resp.setStatus(200);
-//
             } else {
                 resp.getWriter().write("Invalid credentials");
                 resp.setStatus(400);
@@ -60,9 +59,8 @@ public class AuthServlet extends HttpServlet {
                 resp.getWriter().write(payload);
                 session = req.getSession();
                 session.setAttribute("auth-user", employee);
-                System.out.println("New User registered!");
+                resp.setContentType("application/json");
                 resp.setStatus(201);
-//
             } else {
                 resp.getWriter().write("Failed to create user, username already taken. Try again.");
                 resp.setStatus(400);

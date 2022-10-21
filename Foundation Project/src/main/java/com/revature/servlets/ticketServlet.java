@@ -42,9 +42,9 @@ public class ticketServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("LOG - ticketServlet received a GET request at " + LocalDateTime.now());
         HttpSession session = req.getSession(false);
-        if(session != null){
+        if (session != null) {
             Employee loggedInEmployee = (Employee) session.getAttribute("auth-user");
-            if(!loggedInEmployee.getUsername().equals("admin")) {
+            if (!loggedInEmployee.getUsername().equals("admin")) {
                 if (req.getParameter("action").equals("view-my-tickets")) {
                     List<Ticket> tickets = tip.getTicketByEmployeeId(loggedInEmployee);
                     if (req.getParameter("status").equals("pending")) {
@@ -58,31 +58,42 @@ public class ticketServlet extends HttpServlet{
                             resp.setContentType("application/json");
                         }
                     }
-                    if (tickets.size() < 1) {
-                        resp.getWriter().write("You currently have zero tickets");
-                    } else {
-                        String payload = mapper.writeValueAsString(tickets);
-                        resp.getWriter().write(payload);
-                        resp.setStatus(200);
-                        resp.setContentType("application/json");
+                    if (req.getParameter("status").equals("all")) {
+                        List<Ticket> getAllTickets = tip.getTicketByEmployeeId(loggedInEmployee);
+                        if (getAllTickets.size() < 1) {
+                            resp.getWriter().write("You have no previous tickets");
+                        } else {
+                            String payload = mapper.writeValueAsString(getAllTickets);
+                            resp.getWriter().write(payload);
+                            resp.setStatus(200);
+                            resp.setContentType("application/json");
+                        }
+                        if (tickets.size() < 1) {
+                            resp.getWriter().write("You currently have zero tickets");
+                        } else {
+                            String payload = mapper.writeValueAsString(tickets);
+                            resp.getWriter().write(payload);
+                            resp.setStatus(200);
+                            resp.setContentType("application/json");
+                        }
                     }
-                }
-            } else {
-                if(req.getParameter("action").equals("view-all-tickets")){
-                    List<Ticket> newTickets = tsa.getTicketsByStatus("Pending");
-                    if(newTickets.size() > 0){
-                        String payload = mapper.writeValueAsString(newTickets);
-                        resp.getWriter().write(payload);
-                    }else{
-                        resp.getWriter().write("There are no pending tickets");
+                } else {
+                    if (req.getParameter("action").equals("view-all-tickets")) {
+                        List<Ticket> newTickets = tsa.getTicketsByStatus("Pending");
+                        if (newTickets.size() > 0) {
+                            String payload = mapper.writeValueAsString(newTickets);
+                            resp.getWriter().write(payload);
+                            resp.setContentType("application/json");
+                        } else {
+                            resp.getWriter().write("There are no pending tickets");
+                        }
+
+
                     }
-
-
-
                 }
             }
-        }
 
+        }
     }
 
     @Override
@@ -98,10 +109,12 @@ public class ticketServlet extends HttpServlet{
                         Ticket approveTicket = tsa.updateTicket(ticket.getId(), "Approved");
                         String payload = mapper.writeValueAsString(approveTicket);
                         resp.getWriter().write(payload);
+                        resp.setContentType("application/json");
                     } else if (req.getParameter("action").equals("deny")) {
                         Ticket denyTicket = tsa.updateTicket(ticket.getId(), "Denied");
                         String payload = mapper.writeValueAsString(denyTicket);
                         resp.getWriter().write(payload);
+                        resp.setContentType("application/json");
                     }
                 }else{
                     resp.getWriter().write("This ticket has already been processed.");
@@ -127,9 +140,10 @@ public class ticketServlet extends HttpServlet{
                 } else if (ticket.getReason().equals("")) {
                     HashMap<String, Object> errorMessage = new HashMap<>();
                     errorMessage.put("Status code", 400);
-                    errorMessage.put("Message", "Ticket cannot have a null value for reason");
+                    errorMessage.put("Message", "Ticket cannot have a null value for Description");
                     errorMessage.put("Timestamp", LocalDateTime.now().toString());
                     resp.getWriter().write(mapper.writeValueAsString(errorMessage));
+                    resp.setContentType("application/json");
                 } else{
                     Ticket tick = tsa.create(ticket.getAmount(), ticket.getReason(), loggedInEmployee);
                     String payload = mapper.writeValueAsString(tick);
