@@ -138,5 +138,45 @@ public class EmployeeDAOImplPostgres implements employeeDAO{
         return employees;
     }
 
+    public Employee getByStatus(String username){
+        Employee employ = new Employee();
+
+        try (Connection conn = connectionUtil.getConnection()){
+
+            String sql = "SELECT * FROM employee WHERE username = ? AND title = manager";
+
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, username);
+
+
+            ResultSet rs;
+
+            if ((rs = stmt.executeQuery()) != null){
+
+                rs.next();
+
+                int id = rs.getInt("id");
+                String fname = rs.getString("fname");
+                String lname = rs.getString("lname");
+                String receivedUsername = rs.getString("username");
+                String password = rs.getString("password");
+                String email = rs.getString("email");
+
+                // create employee object to return
+                employ = new Employee(id,fname,lname,receivedUsername,password,email);
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+
+
+
+        return employ;
+
+
+    }
+
 
 }

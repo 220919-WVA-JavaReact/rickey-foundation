@@ -5,6 +5,8 @@ import com.revature.dao.ticketImplPostgres;
 import com.revature.model.Employee;
 import com.revature.model.Ticket;
 
+import java.util.List;
+
 
 public class TicketServiceAPI{
     
@@ -13,14 +15,23 @@ public class TicketServiceAPI{
 
     public Ticket create(int amount, String reason, Employee employee) {
         Ticket ticket = new Ticket();
-        // Ticket ticket = td.getByTicketId(amount);
         ticket.setAmount(amount);
         ticket.setReason(reason);
-//        if(reason.equals(null)){
-//            System.out.println("Ticket must have a reason/description");
-//
-//        }
+
 
         return td.createTicket(ticket, employee);
+    }
+
+    public List<Ticket> getTicketsByStatus(String status){
+        return td.viewAllByStatus(status);
+    }
+
+    public Ticket getTicketById(int id) {
+        return td.getByTicketId(id);
+    }
+
+    public Ticket updateTicket(int id, String status) {
+        return td.updateTicket(id, status);
+
     }
 }

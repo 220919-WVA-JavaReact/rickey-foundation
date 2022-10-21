@@ -12,7 +12,35 @@ public class ticketImplPostgres implements ticketDAO{
 
     @Override
     public Ticket getByTicketId(int id) {
-        return null;
+        Ticket ticket = new Ticket();
+
+        try (Connection conn = connectionUtil.getConnection()){
+            String sql = "SELECT * FROM ticket WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+
+            ResultSet rs;
+
+            if ((rs = stmt.executeQuery()) != null){
+                // if 'if' statement runs the query exist
+                if (rs.next()){
+                    int tickid = rs.getInt("id");
+                    int amount = rs.getInt("amount");
+                    String reason = rs.getString("reason");
+                    int empid = rs.getInt("employee_id");
+                    String status = rs.getString("status");
+
+                    ticket = new Ticket(tickid, amount, reason, empid, status);
+
+
+                }
+            }
+
+        } catch(SQLException e){
+            System.out.println("Username taken. Please try again.");
+        }
+
+        return ticket;
     }
 
 
@@ -149,5 +177,63 @@ public class ticketImplPostgres implements ticketDAO{
             e.printStackTrace();
         }
         return newTicket;
+    }
+    public List<Ticket> viewAllByStatus(String status){
+        List<Ticket> tickets = new ArrayList<>();
+        try(Connection conn = connectionUtil.getConnection()) {
+            String sql = "SELECT * FROM ticket WHERE status = ?";
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, status);
+            ResultSet rs;
+            if((rs = stmt.executeQuery()) != null){
+                while(rs.next()) {
+                    int id = rs.getInt("id");
+                    int amount = rs.getInt("amount");
+                    String reason = rs.getString("reason");
+                    int employId = rs.getInt("employee_id");
+                    String status1 = rs.getString("status");
+
+                    Ticket ticket = new Ticket(id, amount, reason, employId, status1);
+                    tickets.add(ticket);
+                }
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return tickets;
+
+    }
+
+    @Override
+    public Ticket updateTicket(int id, String status) {
+        Ticket ticket = new Ticket();
+        try(Connection conn = connectionUtil.getConnection()) {
+            String sql = "UPDATE ticket SET status = ? WHERE id = ? RETURNING *";
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, status);
+            stmt.setInt(2, id);
+            ResultSet rs;
+            if((rs = stmt.executeQuery()) != null){
+                if(rs.next()) {
+                    int ticketId = rs.getInt("id");
+                    int amount = rs.getInt("amount");
+                    String reason = rs.getString("reason");
+                    int employId = rs.getInt("employee_id");
+                    String status1 = rs.getString("status");
+
+                    ticket = new Ticket(ticketId, amount, reason, employId, status1);
+                }
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return ticket;
+
     }
 }

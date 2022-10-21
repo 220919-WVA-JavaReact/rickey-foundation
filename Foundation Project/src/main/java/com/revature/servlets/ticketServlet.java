@@ -44,36 +44,72 @@ public class ticketServlet extends HttpServlet{
         HttpSession session = req.getSession(false);
         if(session != null){
             Employee loggedInEmployee = (Employee) session.getAttribute("auth-user");
-            if(req.getParameter("action").equals("view-my-tickets")){
-                List<Ticket> tickets = tip.getTicketByEmployeeId(loggedInEmployee);
-                if(req.getParameter("status").equals("pending")){
-                    List<Ticket> pendingTickets = tip.getTicketByStatus(loggedInEmployee);
-                    if(pendingTickets.size() < 1){
-                        resp.getWriter().write("You currently have zero pending tickets");
-                    } else{
-                        String payload = mapper.writeValueAsString(pendingTickets);
+            if(!loggedInEmployee.getUsername().equals("admin")) {
+                if (req.getParameter("action").equals("view-my-tickets")) {
+                    List<Ticket> tickets = tip.getTicketByEmployeeId(loggedInEmployee);
+                    if (req.getParameter("status").equals("pending")) {
+                        List<Ticket> pendingTickets = tip.getTicketByStatus(loggedInEmployee);
+                        if (pendingTickets.size() < 1) {
+                            resp.getWriter().write("You currently have zero pending tickets");
+                        } else {
+                            String payload = mapper.writeValueAsString(pendingTickets);
+                            resp.getWriter().write(payload);
+                            resp.setStatus(200);
+                            resp.setContentType("application/json");
+                        }
+                    }
+                    if (tickets.size() < 1) {
+                        resp.getWriter().write("You currently have zero tickets");
+                    } else {
+                        String payload = mapper.writeValueAsString(tickets);
                         resp.getWriter().write(payload);
                         resp.setStatus(200);
                         resp.setContentType("application/json");
                     }
                 }
-                if (tickets.size() < 1){
-                    resp.getWriter().write("You currently have zero tickets");
-                } else{
-                    String payload = mapper.writeValueAsString(tickets);
-                    resp.getWriter().write(payload);
-                    resp.setStatus(200);
-                    resp.setContentType("application/json");
+            } else {
+                if(req.getParameter("action").equals("view-all-tickets")){
+                    List<Ticket> newTickets = tsa.getTicketsByStatus("Pending");
+                    if(newTickets.size() > 0){
+                        String payload = mapper.writeValueAsString(newTickets);
+                        resp.getWriter().write(payload);
+                    }else{
+                        resp.getWriter().write("There are no pending tickets");
+                    }
+
+
+
                 }
             }
-            Employee loggedemployee = mapper.readValue(req.getInputStream(), Employee.class);
         }
 
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        HttpSession session = req.getSession(false);
+        if(session != null) {
+            Employee loggedInEmployee = (Employee) session.getAttribute("auth-user");
+            if (loggedInEmployee.getUsername().equals("admin")) {
+                Ticket jsonTicket = mapper.readValue(req.getInputStream(), Ticket.class);
+                Ticket ticket = tsa.getTicketById(jsonTicket.getId());
+                if(ticket.getStatus().equals("Pending")){
+                    if(req.getParameter("action").equals("approve")){
+                        Ticket approveTicket = tsa.updateTicket(ticket.getId(), "Approved");
+                        String payload = mapper.writeValueAsString(approveTicket);
+                        resp.getWriter().write(payload);
+                    } else if (req.getParameter("action").equals("deny")) {
+                        Ticket denyTicket = tsa.updateTicket(ticket.getId(), "Denied");
+                        String payload = mapper.writeValueAsString(denyTicket);
+                        resp.getWriter().write(payload);
+                    }
+                }else{
+                    resp.getWriter().write("This ticket has already been processed.");
+                }
+            } else {
+                resp.getWriter().write("You must be logged in as a manager");
+            }
+        }
     }
 
     @Override

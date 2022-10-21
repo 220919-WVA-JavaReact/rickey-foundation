@@ -48,9 +48,14 @@ public class EmployeeServiceAPI {
         }
 
     }
-//
-//    public Employee getTickets(String username){
-//        Employee employee = tip.getAllTickets();
-//
-//    }
+
+    public Employee managerValid(String username){
+        Employee manager = ed.getByStatus(username);
+        if(manager.getUsername().equals("admin")){
+            System.out.println("You are acting as a manager!");
+            return manager;
+        } else {
+            return null;
+        }
+    }
 }

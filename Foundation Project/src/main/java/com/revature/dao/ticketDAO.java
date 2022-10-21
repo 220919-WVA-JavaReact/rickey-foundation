@@ -15,4 +15,9 @@ public interface ticketDAO {
 
 
     Ticket createTicket(Ticket ticket, Employee employee);
+
+    List<Ticket> viewAllByStatus(String status);
+
+
+    Ticket updateTicket(int id, String status);
 }

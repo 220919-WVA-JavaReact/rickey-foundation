@@ -46,24 +46,6 @@ public class ManagerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        List<Ticket> ticket = tp.getTicketByEmployeeId(manager);
-        System.out.println("[LOG] - ManagerServlet received a GET request at " + LocalDateTime.now());
-        System.out.println("[LOG] - Request URI: " + req.getRequestURI());
-        System.out.println("LOG] - Request method: " + req.getMethod());
-        System.out.println("[LOG] - Request header, example: " + req.getHeader("example"));
-        System.out.println("[LOG] - Request query string " + req.getQueryString());
-
-        System.out.println("[LOG] - was filtered? " + req.getAttribute("was-filtered"));
-
-        resp.setStatus(200);
-        resp.setHeader("Content-type", "text/plain");
-        resp.setHeader("example-response-header", "some-example-value");
-        resp.getWriter().write("This is the response payload");
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         HttpSession session = req.getSession(false);
@@ -82,14 +64,6 @@ public class ManagerServlet extends HttpServlet {
         System.out.println("[LOG] - ManagerServlet received a GET request at " + LocalDateTime.now());
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        if(session != null){
-            session.invalidate();
-            System.out.println("You have been logged out");
-        }
 
-        resp.setStatus(204);
-    }
 }
+
